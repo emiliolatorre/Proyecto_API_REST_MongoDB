@@ -1,14 +1,15 @@
-const Product = require('../models/products.model');
-const services = require('../services/products.service');
+const { defaultMaxListeners } = require('supertest/lib/test');
+const Provider = require('../models/provider.model');
+const services = require('../services/provider.service');
 const { validationResult } = require("express-validator");
 
-// // CREATE (directamente sin services)
-// const createProduct = async (req, res) => {
+// // CREATE (directamente sin Services)
+// const createProvider = async (req, res) => {
 //     console.log(req.body);
 
 //     try{
 //         const data = req.body;
-//         let answer = await new Product(data).save();
+//         let answer = await new Provider(data).save();
 //         res.status(201).json(answer);
 
 //     }catch (error) {
@@ -18,7 +19,7 @@ const { validationResult } = require("express-validator");
 // }
 
 // CREATE
-const createProduct = async (req, res, next) => {
+const createProvider = async (req, res, next) => {
     console.log(req.body);
 
     const errors = validationResult(req);
@@ -33,7 +34,7 @@ const createProduct = async (req, res, next) => {
 
     try{
         const data = req.body;
-        let answer = await services.crearProducto(data);
+        let answer = await services.crearProvider(data);
         res.status(201).json(answer);
 
     }catch (error) {
@@ -44,11 +45,11 @@ const createProduct = async (req, res, next) => {
 }
 
 // // READ (directamente sin services)
-// const getProduct = async (req, res) => {
+// const getProvider = async (req, res) => {
 //         try {
 //             const id = req.params.id;
-//             let products = id? await Product.find({id},'-__v') : await Product.find({},'-__v'); //{}
-//             res.status(200).json(products); // Respuesta de la API para 1 producto
+//             let providers = id? await Provider.find({id},'-__v') : await Provider.find({},'-__v'); //{}
+//             res.status(200).json(providers); // Respuesta de la API para 1 producto
 //         }
 //         catch (error) {
 //             console.log(`ERROR: ${error.stack}`);
@@ -57,12 +58,12 @@ const createProduct = async (req, res, next) => {
 // }
 
 // READ
-const getProduct = async (req, res) => {
+const getProvider = async (req, res) => {
 
     try {
         const id = req.params.id;
-        let products = id? await services.obtenerProductoPorId(id) : await services.obtenerTodosLosProductos(); //{}
-        res.status(200).json(products); // Respuesta de la API para 1 producto
+        let providers = id? await services.obtenerProviderPorId(id) : await services.obtenerTodosLosProviders(); //{}
+        res.status(200).json(providers); // Respuesta de la API para 1 producto
     }
     catch (error) {
         console.log(`ERROR: ${error.stack}`);
@@ -71,12 +72,12 @@ const getProduct = async (req, res) => {
 }
 
 // // UPATE (directamente sin services)
-// const editProduct = (req, res) => {
-//     res.status(200).send("Producto editado!");
+// const editProvider = (req, res) => {
+//     res.status(200).send("Provider editado!");
 // }
 
 // UPATE
-const editProduct = async (req, res) => {
+const editProvider = async (req, res) => {
     const errors = validationResult(req);
 
     // Manejar errores de validación (express-validator)
@@ -90,8 +91,8 @@ const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;
-        const updatedProduct = await services.actualizarProducto(id, data);
-        res.status(200).json({ message: `Producto actualizado: ${updatedProduct.title}`, product: updatedProduct });
+        const updatedProvider = await services.actualizarProvider(id, data);
+        res.status(200).json({ message: `Proveedor actualizado: ${updatedProvider.company_name}`, provider: updatedProvider });
     } catch (error) {
         console.log(`ERROR: ${error.message}`);
         res.status(400).json({ msj: `ERROR: ${error.message}` });
@@ -99,15 +100,15 @@ const editProduct = async (req, res) => {
 };
 
 // // DELETE (directamente sin services)
-// const deleteProduct = (req, res) => {
+// const deleteProvider = (req, res) => {
 //     res.status(200).send("Producto borrado!. Has borrado:"+req.params.id);
 // }
 
 // DELETE
-const deleteProduct = async (req, res) => {
+const deleteProvider = async (req, res) => {
     const errors = validationResult(req);
 
-    // Manejar errores de validación (express-validator)
+    // Manejar errores de validación
     if (!errors.isEmpty()) {
         return res.status(400).json({
             success: false,
@@ -117,13 +118,13 @@ const deleteProduct = async (req, res) => {
 
     try {
         const id = req.params.id;
-        const deletedProduct = await services.eliminarProducto(id);
+        const deletedProvider = await services.eliminarProvider(id);
 
-        if (!deletedProduct) {
-            return res.status(404).json({ message: `Producto con ID ${id} no encontrado` });
+        if (!deletedProvider) {
+            return res.status(404).json({ message: `Proveedor con ID ${id} no encontrado` });
         }
 
-        res.status(200).json({ message: `Producto eliminado: ${deletedProduct.title}`, product: deletedProduct });
+        res.status(200).json({ message: `Proveedor eliminado: ${deletedProvider.company_name}`, provider: deletedProvider });
     } catch (error) {
         console.log(`ERROR: ${error.message}`);
         res.status(400).json({ msj: `ERROR: ${error.message}` });
@@ -131,8 +132,8 @@ const deleteProduct = async (req, res) => {
 };
 
 module.exports = {
-    createProduct,
-    getProduct,
-    editProduct,
-    deleteProduct
+    createProvider,
+    getProvider,
+    editProvider,
+    deleteProvider
 }
